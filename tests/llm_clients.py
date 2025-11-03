@@ -11,7 +11,6 @@ All clients are optional - they gracefully skip if API keys are not configured.
 
 import os
 from abc import ABC, abstractmethod
-from typing import Optional
 
 
 class LLMClient(ABC):
@@ -65,7 +64,7 @@ class AnthropicClient(LLMClient):
         if os.getenv("ANTHROPIC_API_KEY") is None:
             return False
         try:
-            import anthropic
+            import anthropic  # noqa: F401
 
             return True
         except ImportError:
@@ -82,9 +81,7 @@ class OpenAIClient(LLMClient):
 
             self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         except ImportError:
-            raise ImportError(
-                "openai package not installed. Install with: uv pip install openai"
-            )
+            raise ImportError("openai package not installed. Install with: uv pip install openai")
 
     def generate(self, prompt: str, timeout: int = 60) -> str:
         """Generate text using OpenAI"""
@@ -103,7 +100,7 @@ class OpenAIClient(LLMClient):
         if os.getenv("OPENAI_API_KEY") is None:
             return False
         try:
-            from openai import OpenAI
+            from openai import OpenAI  # noqa: F401
 
             return True
         except ImportError:
@@ -117,9 +114,7 @@ class OpenWebUIClient(LLMClient):
         super().__init__(model, max_tokens, temperature)
         self.base_url = os.getenv("OPENWEBUI_BASE_URL")
         if not self.base_url:
-            raise ValueError(
-                "OPENWEBUI_BASE_URL environment variable required for Open WebUI"
-            )
+            raise ValueError("OPENWEBUI_BASE_URL environment variable required for Open WebUI")
 
         try:
             from openai import OpenAI
@@ -129,9 +124,7 @@ class OpenWebUIClient(LLMClient):
             api_key = os.getenv("OPENWEBUI_API_KEY", "dummy-key-for-local")
             self.client = OpenAI(base_url=self.base_url, api_key=api_key)
         except ImportError:
-            raise ImportError(
-                "openai package not installed. Install with: uv pip install openai"
-            )
+            raise ImportError("openai package not installed. Install with: uv pip install openai")
 
     def generate(self, prompt: str, timeout: int = 60) -> str:
         """Generate text using Open WebUI / Ollama"""
@@ -151,7 +144,7 @@ class OpenWebUIClient(LLMClient):
         if base_url is None:
             return False
         try:
-            from openai import OpenAI
+            from openai import OpenAI  # noqa: F401
 
             return True
         except ImportError:

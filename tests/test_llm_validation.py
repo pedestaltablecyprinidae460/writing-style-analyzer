@@ -26,7 +26,6 @@ No personal data is sent to any API.
 """
 
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -36,9 +35,8 @@ import yaml
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from tests.llm_clients import get_available_clients
 from german_academic_analyzer import analyze_text
-
+from tests.llm_clients import get_available_clients
 
 # Load test configuration
 CONFIG_PATH = Path(__file__).parent / "config.yaml"
@@ -121,9 +119,7 @@ class TestLLMProfileValidation:
 
     @pytest.mark.parametrize("provider_name", list(AVAILABLE_CLIENTS.keys()))
     @pytest.mark.parametrize("word_count", [150, 500])
-    def test_generated_text_matches_profile_metrics(
-        self, provider_name, word_count, test_profiles
-    ):
+    def test_generated_text_matches_profile_metrics(self, provider_name, word_count, test_profiles):
         """
         Test that LLM-generated text matches the profile's target metrics.
 
@@ -135,9 +131,7 @@ class TestLLMProfileValidation:
 
         # Generate text using the profile
         prompt = create_prompt(profile, word_count)
-        generated_text = client.generate(
-            prompt, timeout=TEST_SETTINGS["timeout"]
-        )
+        generated_text = client.generate(prompt, timeout=TEST_SETTINGS["timeout"])
 
         # Analyze the generated text
         analysis = analyze_text(generated_text)
@@ -158,9 +152,7 @@ class TestLLMProfileValidation:
         ), f"{provider_name}: Sentence length {actual_sent_len:.1f} vs expected {expected_sent_len:.1f} (diff: {sent_len_diff:.1f})"
 
         # Validate passive voice (±15 percentage points)
-        expected_passive = profile["metrics"]["voice_and_style"][
-            "passive_voice_percentage"
-        ]
+        expected_passive = profile["metrics"]["voice_and_style"]["passive_voice_percentage"]
         actual_passive = analysis["passive_percentage_estimate"]
         passive_diff = abs(actual_passive - expected_passive)
         assert (
@@ -180,9 +172,7 @@ class TestLLMProfileValidation:
 
         # Generate text
         prompt = create_prompt(profile, word_count)
-        generated_text = client.generate(
-            prompt, timeout=TEST_SETTINGS["timeout"]
-        )
+        generated_text = client.generate(prompt, timeout=TEST_SETTINGS["timeout"])
 
         # Analyze transitions
         analysis = analyze_text(generated_text)
@@ -192,18 +182,14 @@ class TestLLMProfileValidation:
         expected_categories = set(profile["transitions"].keys())
 
         # Calculate coverage
-        coverage = (
-            len(found_categories & expected_categories) / len(expected_categories)
-        )
+        coverage = len(found_categories & expected_categories) / len(expected_categories)
 
         assert (
             coverage >= VALIDATION["min_category_coverage"]
         ), f"{provider_name}: Only {coverage*100:.0f}% of transition categories found (expected ≥{VALIDATION['min_category_coverage']*100:.0f}%). Missing: {expected_categories - found_categories}"
 
     @pytest.mark.parametrize("provider_name", list(AVAILABLE_CLIENTS.keys()))
-    def test_excellence_profile_uses_advanced_categories(
-        self, provider_name, test_profiles
-    ):
+    def test_excellence_profile_uses_advanced_categories(self, provider_name, test_profiles):
         """
         Test that excellence profile's advanced categories (conditional, clarifying, concessive)
         actually appear in generated text.
@@ -214,9 +200,7 @@ class TestLLMProfileValidation:
 
         # Generate text
         prompt = create_prompt(profile, word_count)
-        generated_text = client.generate(
-            prompt, timeout=TEST_SETTINGS["timeout"]
-        )
+        generated_text = client.generate(prompt, timeout=TEST_SETTINGS["timeout"])
 
         # Analyze transitions
         analysis = analyze_text(generated_text)
@@ -248,9 +232,7 @@ class TestLLMProfileValidation:
         analyses = []
         prompt = create_prompt(profile, word_count)
         for _ in range(num_runs):
-            generated_text = client.generate(
-                prompt, timeout=TEST_SETTINGS["timeout"]
-            )
+            generated_text = client.generate(prompt, timeout=TEST_SETTINGS["timeout"])
             analysis = analyze_text(generated_text)
             analyses.append(analysis)
 
@@ -283,9 +265,7 @@ class TestLLMProfileValidation:
 
         # Generate text
         prompt = create_prompt(profile, word_count)
-        generated_text = client.generate(
-            prompt, timeout=TEST_SETTINGS["timeout"]
-        )
+        generated_text = client.generate(prompt, timeout=TEST_SETTINGS["timeout"])
 
         # Analyze transitions
         analysis = analyze_text(generated_text)
@@ -319,22 +299,14 @@ class TestLLMProviderComparison:
 
         results = {}
         for provider_name, client in AVAILABLE_CLIENTS.items():
-            generated_text = client.generate(
-                prompt, timeout=TEST_SETTINGS["timeout"]
-            )
+            generated_text = client.generate(prompt, timeout=TEST_SETTINGS["timeout"])
             analysis = analyze_text(generated_text)
             results[provider_name] = analysis
 
             # Each provider should produce valid output
-            assert (
-                analysis["word_count"] > 0
-            ), f"{provider_name} produced empty text"
-            assert (
-                analysis["sentence_count"] > 0
-            ), f"{provider_name} produced no sentences"
-            assert (
-                len(analysis["transitions"]) > 0
-            ), f"{provider_name} used no transitions"
+            assert analysis["word_count"] > 0, f"{provider_name} produced empty text"
+            assert analysis["sentence_count"] > 0, f"{provider_name} produced no sentences"
+            assert len(analysis["transitions"]) > 0, f"{provider_name} used no transitions"
 
         # All providers should be within reasonable range of each other
         word_counts = [r["word_count"] for r in results.values()]

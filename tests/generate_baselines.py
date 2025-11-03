@@ -22,14 +22,14 @@ from german_academic_analyzer import analyze_text
 def generate_baseline(text_path: Path, baseline_path: Path):
     """Generate baseline analysis from text file."""
     # Read text
-    with open(text_path, 'r', encoding='utf-8') as f:
+    with open(text_path, encoding="utf-8") as f:
         text = f.read()
 
     # Analyze
     analysis = analyze_text(text)
 
     # Save baseline
-    with open(baseline_path, 'w', encoding='utf-8') as f:
+    with open(baseline_path, "w", encoding="utf-8") as f:
         json.dump(analysis, f, indent=2, ensure_ascii=False)
 
     print(f"✅ Generated baseline: {baseline_path.name}")

@@ -5,27 +5,27 @@ This module provides common fixtures and configuration for all tests.
 Uses ONLY synthetic test data from tests/fixtures/ (no personal data).
 """
 
+import json
+import sys
+from pathlib import Path
+
 import pytest
 import yaml
-import json
-from pathlib import Path
-import sys
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from german_academic_analyzer import analyze_text, load_profile, compare_to_profile
 
 
 # ============================================================================
 # Path Fixtures
 # ============================================================================
 
+
 @pytest.fixture(scope="session")
 def test_config():
     """Load test configuration."""
     config_path = Path(__file__).parent / "config.yaml"
-    with open(config_path, 'r', encoding='utf-8') as f:
+    with open(config_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -45,11 +45,12 @@ def baselines_dir():
 # Profile Fixtures (Synthetic Profiles)
 # ============================================================================
 
+
 @pytest.fixture(scope="session")
 def sample_profile_default(fixtures_dir):
     """Load synthetic default academic profile."""
     profile_path = fixtures_dir / "sample_profile_default.json"
-    with open(profile_path, 'r', encoding='utf-8') as f:
+    with open(profile_path, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -57,7 +58,7 @@ def sample_profile_default(fixtures_dir):
 def sample_profile_excellence(fixtures_dir):
     """Load synthetic excellence academic profile."""
     profile_path = fixtures_dir / "sample_profile_excellence.json"
-    with open(profile_path, 'r', encoding='utf-8') as f:
+    with open(profile_path, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -65,11 +66,12 @@ def sample_profile_excellence(fixtures_dir):
 # Text Fixtures (Synthetic German Academic Texts)
 # ============================================================================
 
+
 @pytest.fixture(scope="session")
 def sample_text_short(fixtures_dir):
     """Load synthetic short German academic text (~150 words)."""
     text_path = fixtures_dir / "sample_text_short.txt"
-    with open(text_path, 'r', encoding='utf-8') as f:
+    with open(text_path, encoding="utf-8") as f:
         return f.read()
 
 
@@ -77,7 +79,7 @@ def sample_text_short(fixtures_dir):
 def sample_text_long(fixtures_dir):
     """Load synthetic long German academic text (~300 words)."""
     text_path = fixtures_dir / "sample_text_long.txt"
-    with open(text_path, 'r', encoding='utf-8') as f:
+    with open(text_path, encoding="utf-8") as f:
         return f.read()
 
 
@@ -85,21 +87,23 @@ def sample_text_long(fixtures_dir):
 # Tolerance Fixtures
 # ============================================================================
 
+
 @pytest.fixture(scope="session")
 def tolerances(test_config):
     """Get metric tolerances from config."""
-    return test_config['tolerances']
+    return test_config["tolerances"]
 
 
 @pytest.fixture(scope="session")
 def profile_validation_config(test_config):
     """Get profile validation requirements from config."""
-    return test_config['profile_validation']
+    return test_config["profile_validation"]
 
 
 # ============================================================================
 # Helper Functions (Available to All Tests)
 # ============================================================================
+
 
 def assert_within_tolerance(actual, expected, tolerance, metric_name):
     """

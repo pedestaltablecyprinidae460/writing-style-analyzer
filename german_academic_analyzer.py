@@ -26,11 +26,8 @@ Author: writing-style-analyzer project
 License: MIT
 """
 
-import re
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional
 import json
-
+import re
 
 # ============================================================================
 # UNIVERSAL LINGUISTIC PATTERNS (Authoritative German Academic)
@@ -38,42 +35,102 @@ import json
 
 TRANSITIONS = {
     "additive": [
-        "außerdem", "zusätzlich", "und", "sowie", "überdies", "ferner",
-        "weiterhin", "darüber hinaus", "zudem", "ebenso", "gleichermaßen"
+        "außerdem",
+        "zusätzlich",
+        "und",
+        "sowie",
+        "überdies",
+        "ferner",
+        "weiterhin",
+        "darüber hinaus",
+        "zudem",
+        "ebenso",
+        "gleichermaßen",
     ],
     "contrastive": [
-        "jedoch", "aber", "allerdings", "dennoch", "dagegen", "hingegen",
-        "andererseits", "im gegensatz", "demgegenüber", "vielmehr"
+        "jedoch",
+        "aber",
+        "allerdings",
+        "dennoch",
+        "dagegen",
+        "hingegen",
+        "andererseits",
+        "im gegensatz",
+        "demgegenüber",
+        "vielmehr",
     ],
     "causal": [
-        "daher", "somit", "da", "aufgrund", "folglich", "demnach",
-        "infolgedessen", "deshalb", "weil", "deswegen", "aus diesem grund"
+        "daher",
+        "somit",
+        "da",
+        "aufgrund",
+        "folglich",
+        "demnach",
+        "infolgedessen",
+        "deshalb",
+        "weil",
+        "deswegen",
+        "aus diesem grund",
     ],
     "temporal": [
-        "zunächst", "dann", "anschließend", "schließlich", "bevor",
-        "nachdem", "während", "daraufhin", "danach", "zuvor", "zuerst"
+        "zunächst",
+        "dann",
+        "anschließend",
+        "schließlich",
+        "bevor",
+        "nachdem",
+        "während",
+        "daraufhin",
+        "danach",
+        "zuvor",
+        "zuerst",
     ],
     "conclusive": [
-        "insgesamt", "zusammenfassend", "abschließend", "letztendlich",
-        "im ergebnis", "somit", "insofern"
+        "insgesamt",
+        "zusammenfassend",
+        "abschließend",
+        "letztendlich",
+        "im ergebnis",
+        "somit",
+        "insofern",
     ],
     "conditional": [
-        "wenn", "falls", "sofern", "insofern", "vorausgesetzt",
-        "unter der bedingung", "angenommen"
+        "wenn",
+        "falls",
+        "sofern",
+        "insofern",
+        "vorausgesetzt",
+        "unter der bedingung",
+        "angenommen",
     ],
     "clarifying": [
-        "das heißt", "mit anderen worten", "genauer gesagt", "d.h.",
-        "anders ausgedrückt", "sprich"
+        "das heißt",
+        "mit anderen worten",
+        "genauer gesagt",
+        "d.h.",
+        "anders ausgedrückt",
+        "sprich",
     ],
     "concessive": [
-        "obwohl", "trotzdem", "obgleich", "wenngleich", "trotz",
-        "nichtsdestotrotz", "gleichwohl"
-    ]
+        "obwohl",
+        "trotzdem",
+        "obgleich",
+        "wenngleich",
+        "trotz",
+        "nichtsdestotrotz",
+        "gleichwohl",
+    ],
 }
 
 PASSIVE_INDICATORS = [
-    r"\bwird\b", r"\bwerden\b", r"\bwurde\b", r"\bwurden\b",
-    r"\bworden\b", r"\bgeworden\b", r"\bwäre\b", r"\bwären\b"
+    r"\bwird\b",
+    r"\bwerden\b",
+    r"\bwurde\b",
+    r"\bwurden\b",
+    r"\bworden\b",
+    r"\bgeworden\b",
+    r"\bwäre\b",
+    r"\bwären\b",
 ]
 
 
@@ -81,7 +138,8 @@ PASSIVE_INDICATORS = [
 # CORE ANALYSIS FUNCTIONS (Universal - No User-Specific Logic)
 # ============================================================================
 
-def analyze_text(text: str) -> Dict:
+
+def analyze_text(text: str) -> dict:
     """
     Analyze German academic text for linguistic features.
 
@@ -107,8 +165,8 @@ def analyze_text(text: str) -> Dict:
             - lexical_diversity: Unique words / total words (approximation)
     """
     # Clean text (remove markdown headers, normalize whitespace)
-    text_clean = re.sub(r'^#.*$', '', text, flags=re.MULTILINE)
-    text_clean = re.sub(r'\s+', ' ', text_clean).strip()
+    text_clean = re.sub(r"^#.*$", "", text, flags=re.MULTILINE)
+    text_clean = re.sub(r"\s+", " ", text_clean).strip()
     text_lower = text_clean.lower()
 
     # Word count
@@ -118,18 +176,20 @@ def analyze_text(text: str) -> Dict:
     lexical_diversity = unique_words / word_count if word_count > 0 else 0
 
     # Sentence analysis
-    sentences = re.split(r'[.!?]+', text_clean)
+    sentences = re.split(r"[.!?]+", text_clean)
     sentences = [s.strip() for s in sentences if s.strip()]
     sentence_count = len(sentences)
     avg_sentence_length = word_count / sentence_count if sentence_count > 0 else 0
 
     # Paragraph analysis
-    paragraphs = [p.strip() for p in text.split('\n\n') if p.strip() and not p.strip().startswith('#')]
+    paragraphs = [
+        p.strip() for p in text.split("\n\n") if p.strip() and not p.strip().startswith("#")
+    ]
     paragraph_count = len(paragraphs)
     avg_paragraph_length = sentence_count / paragraph_count if paragraph_count > 0 else 0
 
     # Semicolons
-    semicolon_count = text.count(';')
+    semicolon_count = text.count(";")
 
     # Transition word analysis
     transition_counts = {}
@@ -139,16 +199,13 @@ def analyze_text(text: str) -> Dict:
         count = 0
         found_words = []
         for word in words_list:
-            pattern = r'\b' + re.escape(word) + r'\b'
+            pattern = r"\b" + re.escape(word) + r"\b"
             matches = len(re.findall(pattern, text_lower))
             if matches > 0:
                 count += matches
                 found_words.append(f"{word} ({matches})")
 
-        transition_counts[category] = {
-            "count": count,
-            "words": found_words
-        }
+        transition_counts[category] = {"count": count, "words": found_words}
         total_transitions += count
 
     # Passive voice estimation
@@ -175,7 +232,7 @@ def analyze_text(text: str) -> Dict:
     }
 
 
-def load_profile(profile_path: str) -> Dict:
+def load_profile(profile_path: str) -> dict:
     """
     Load a user's writing style profile from JSON.
 
@@ -185,11 +242,11 @@ def load_profile(profile_path: str) -> Dict:
     Returns:
         dict: Profile data
     """
-    with open(profile_path, 'r', encoding='utf-8') as f:
+    with open(profile_path, encoding="utf-8") as f:
         return json.load(f)
 
 
-def calculate_expected_metrics(profile: Dict, target_word_count: int) -> Dict:
+def calculate_expected_metrics(profile: dict, target_word_count: int) -> dict:
     """
     Calculate expected metrics for generated text based on ANY user's profile.
 
@@ -204,20 +261,20 @@ def calculate_expected_metrics(profile: Dict, target_word_count: int) -> Dict:
         dict: Expected metrics scaled to target word count
     """
     # Handle both flat and nested profile structures
-    if 'basic' in profile.get('metrics', {}):
+    if "basic" in profile.get("metrics", {}):
         # Nested structure (v2 profiles)
-        baseline_words = profile['metrics']['basic']['total_words']
-        sentence_length = profile['metrics']['basic']['avg_sentence_length']
-        paragraph_length = profile['metrics']['basic']['avg_paragraph_length']
-        lexical_diversity = profile['metrics']['basic']['lexical_diversity']
-        passive_ratio = profile['metrics']['voice_and_style'].get('passive_ratio', 0)
+        baseline_words = profile["metrics"]["basic"]["total_words"]
+        sentence_length = profile["metrics"]["basic"]["avg_sentence_length"]
+        paragraph_length = profile["metrics"]["basic"]["avg_paragraph_length"]
+        lexical_diversity = profile["metrics"]["basic"]["lexical_diversity"]
+        passive_ratio = profile["metrics"]["voice_and_style"].get("passive_ratio", 0)
     else:
         # Flat structure (generic profiles)
-        baseline_words = profile['metrics'].get('total_words', 1000)
-        sentence_length = profile['metrics'].get('avg_sentence_length', 20)
-        paragraph_length = profile['metrics'].get('avg_paragraph_length', 3)
-        lexical_diversity = profile['metrics'].get('lexical_diversity', 0.3)
-        passive_ratio = profile['metrics'].get('passive_voice_ratio', 0.4)
+        baseline_words = profile["metrics"].get("total_words", 1000)
+        sentence_length = profile["metrics"].get("avg_sentence_length", 20)
+        paragraph_length = profile["metrics"].get("avg_paragraph_length", 3)
+        lexical_diversity = profile["metrics"].get("lexical_diversity", 0.3)
+        passive_ratio = profile["metrics"].get("passive_voice_ratio", 0.4)
 
     scale_factor = target_word_count / baseline_words
 
@@ -230,22 +287,24 @@ def calculate_expected_metrics(profile: Dict, target_word_count: int) -> Dict:
     }
 
     # Scale transition counts if available
-    if 'transitions' in profile:
+    if "transitions" in profile:
         # Handle v2 structure
-        if isinstance(profile['transitions'], dict) and 'by_category' in profile['metrics'].get('transitions', {}):
-            for category, data in profile['metrics']['transitions']['by_category'].items():
-                if isinstance(data, dict) and 'count' in data:
-                    expected[f"{category}_transitions"] = round(data['count'] * scale_factor)
+        if isinstance(profile["transitions"], dict) and "by_category" in profile["metrics"].get(
+            "transitions", {}
+        ):
+            for category, data in profile["metrics"]["transitions"]["by_category"].items():
+                if isinstance(data, dict) and "count" in data:
+                    expected[f"{category}_transitions"] = round(data["count"] * scale_factor)
         # Handle flat structure
         else:
-            for category, patterns in profile['transitions'].items():
+            for category, patterns in profile["transitions"].items():
                 if isinstance(patterns, list):
                     expected[f"{category}_transitions"] = round(len(patterns) * scale_factor)
 
     return expected
 
 
-def compare_to_profile(text: str, profile: Dict, target_word_count: int) -> Dict:
+def compare_to_profile(text: str, profile: dict, target_word_count: int) -> dict:
     """
     Compare generated text against ANY user's profile.
 
@@ -266,74 +325,81 @@ def compare_to_profile(text: str, profile: Dict, target_word_count: int) -> Dict
     expected = calculate_expected_metrics(profile, target_word_count)
 
     # Comparison results
-    comparison = {
-        "actual": actual,
-        "expected": expected,
-        "differences": {},
-        "quality_checks": []
-    }
+    comparison = {"actual": actual, "expected": expected, "differences": {}, "quality_checks": []}
 
     # Calculate differences
     if "sentence_length" in expected:
-        diff = actual['avg_sentence_length'] - expected['sentence_length']
-        comparison['differences']['sentence_length'] = {
-            "actual": actual['avg_sentence_length'],
-            "expected": expected['sentence_length'],
+        diff = actual["avg_sentence_length"] - expected["sentence_length"]
+        comparison["differences"]["sentence_length"] = {
+            "actual": actual["avg_sentence_length"],
+            "expected": expected["sentence_length"],
             "difference": round(diff, 2),
-            "percentage": round((diff / expected['sentence_length'] * 100), 1) if expected['sentence_length'] > 0 else 0
+            "percentage": (
+                round((diff / expected["sentence_length"] * 100), 1)
+                if expected["sentence_length"] > 0
+                else 0
+            ),
         }
 
         # Quality check
         if abs(diff) <= 3:
-            comparison['quality_checks'].append("✅ Sentence length within acceptable range")
+            comparison["quality_checks"].append("✅ Sentence length within acceptable range")
         else:
-            comparison['quality_checks'].append(f"⚠️ Sentence length off by {abs(diff):.1f} words")
+            comparison["quality_checks"].append(f"⚠️ Sentence length off by {abs(diff):.1f} words")
 
     # Word count accuracy
-    word_count_diff = actual['word_count'] - target_word_count
-    word_count_percentage = abs(word_count_diff) / target_word_count * 100 if target_word_count > 0 else 0
-    comparison['differences']['word_count'] = {
-        "actual": actual['word_count'],
+    word_count_diff = actual["word_count"] - target_word_count
+    word_count_percentage = (
+        abs(word_count_diff) / target_word_count * 100 if target_word_count > 0 else 0
+    )
+    comparison["differences"]["word_count"] = {
+        "actual": actual["word_count"],
         "target": target_word_count,
         "difference": word_count_diff,
-        "percentage": round(word_count_percentage, 1)
+        "percentage": round(word_count_percentage, 1),
     }
 
     if word_count_percentage <= 15:
-        comparison['quality_checks'].append(f"✅ Word count accurate ({actual['word_count']}/{target_word_count}, {word_count_percentage:.1f}% error)")
+        comparison["quality_checks"].append(
+            f"✅ Word count accurate ({actual['word_count']}/{target_word_count}, {word_count_percentage:.1f}% error)"
+        )
     else:
-        comparison['quality_checks'].append(f"⚠️ Word count off by {word_count_percentage:.1f}%")
+        comparison["quality_checks"].append(f"⚠️ Word count off by {word_count_percentage:.1f}%")
 
     # Transition density check
-    if 'transitions' in profile or 'transitions' in profile.get('metrics', {}):
+    if "transitions" in profile or "transitions" in profile.get("metrics", {}):
         # Calculate expected density from profile structure
-        if 'basic' in profile.get('metrics', {}):
+        if "basic" in profile.get("metrics", {}):
             # V2 nested structure
-            expected_density = profile['metrics']['transitions'].get('transition_density', 4.23)
+            expected_density = profile["metrics"]["transitions"].get("transition_density", 4.23)
         else:
             # Flat structure - calculate from transitions list
-            total_profile_transitions = sum(len(patterns) if isinstance(patterns, list) else 0
-                                           for patterns in profile.get('transitions', {}).values())
-            baseline_words = profile.get('metrics', {}).get('total_words', 1000)
+            total_profile_transitions = sum(
+                len(patterns) if isinstance(patterns, list) else 0
+                for patterns in profile.get("transitions", {}).values()
+            )
+            baseline_words = profile.get("metrics", {}).get("total_words", 1000)
             expected_density = (total_profile_transitions / baseline_words) * 100
 
-        density_diff = actual['transition_density'] - expected_density
+        density_diff = actual["transition_density"] - expected_density
 
-        comparison['differences']['transition_density'] = {
-            "actual": actual['transition_density'],
+        comparison["differences"]["transition_density"] = {
+            "actual": actual["transition_density"],
             "expected": round(expected_density, 2),
-            "difference": round(density_diff, 2)
+            "difference": round(density_diff, 2),
         }
 
         if abs(density_diff) <= 1.5:
-            comparison['quality_checks'].append("✅ Transition density matches profile")
+            comparison["quality_checks"].append("✅ Transition density matches profile")
         else:
-            comparison['quality_checks'].append(f"⚠️ Transition density differs by {abs(density_diff):.1f}/100w")
+            comparison["quality_checks"].append(
+                f"⚠️ Transition density differs by {abs(density_diff):.1f}/100w"
+            )
 
     return comparison
 
 
-def generate_report(comparison: Dict, test_name: str = "Analysis") -> str:
+def generate_report(comparison: dict, test_name: str = "Analysis") -> str:
     """
     Generate a human-readable markdown report from comparison results.
 
@@ -344,32 +410,38 @@ def generate_report(comparison: Dict, test_name: str = "Analysis") -> str:
     Returns:
         str: Markdown formatted report
     """
-    actual = comparison['actual']
-    expected = comparison['expected']
-    differences = comparison['differences']
+    actual = comparison["actual"]
+    expected = comparison["expected"]
+    differences = comparison["differences"]
 
     output = [f"## {test_name}\n"]
 
     # Basic metrics
     output.append("### Basic Metrics")
-    output.append(f"- **Word count:** {actual['word_count']} "
-                 f"(target: {differences['word_count']['target']}, "
-                 f"{differences['word_count']['percentage']:.1f}% error)")
+    output.append(
+        f"- **Word count:** {actual['word_count']} "
+        f"(target: {differences['word_count']['target']}, "
+        f"{differences['word_count']['percentage']:.1f}% error)"
+    )
     output.append(f"- **Sentences:** {actual['sentence_count']}")
-    output.append(f"- **Avg sentence length:** {actual['avg_sentence_length']} words "
-                 f"(expected: {expected.get('sentence_length', 'N/A')})")
+    output.append(
+        f"- **Avg sentence length:** {actual['avg_sentence_length']} words "
+        f"(expected: {expected.get('sentence_length', 'N/A')})"
+    )
     output.append(f"- **Paragraphs:** {actual['paragraph_count']}")
     output.append(f"- **Lexical diversity:** {actual['lexical_diversity']}")
     output.append(f"- **Semicolons:** {actual['semicolons']}\n")
 
     # Transitions
     output.append("### Transition Analysis")
-    output.append(f"- **Total:** {actual['total_transitions']} "
-                 f"({actual['transition_density']}/100 words)\n")
+    output.append(
+        f"- **Total:** {actual['total_transitions']} "
+        f"({actual['transition_density']}/100 words)\n"
+    )
 
     for category in TRANSITIONS.keys():
-        count = actual['transitions_by_category'][category]['count']
-        words = actual['transitions_by_category'][category]['words']
+        count = actual["transitions_by_category"][category]["count"]
+        words = actual["transitions_by_category"][category]["words"]
         output.append(f"- **{category.capitalize()}:** {count}")
         if words:
             output.append(f"  - Found: {', '.join(words[:5])}")  # Show first 5
@@ -380,14 +452,14 @@ def generate_report(comparison: Dict, test_name: str = "Analysis") -> str:
     output.append("### Passive Voice")
     output.append(f"- **Indicators found:** {actual['passive_indicators']}")
     output.append(f"- **Estimated percentage:** {actual['passive_percentage_estimate']}%")
-    if 'passive_voice_percentage' in expected:
+    if "passive_voice_percentage" in expected:
         output.append(f"- **Expected:** ~{expected['passive_voice_percentage']:.0f}%\n")
     else:
         output.append("")
 
     # Quality checks
     output.append("### Quality Assessment")
-    output.extend(comparison['quality_checks'])
+    output.extend(comparison["quality_checks"])
     output.append("")
 
     return "\n".join(output)
@@ -396,6 +468,7 @@ def generate_report(comparison: Dict, test_name: str = "Analysis") -> str:
 # ============================================================================
 # COMMAND-LINE INTERFACE
 # ============================================================================
+
 
 def main():
     """
@@ -415,7 +488,7 @@ def main():
     text_file = sys.argv[1]
 
     # Read text
-    with open(text_file, 'r', encoding='utf-8') as f:
+    with open(text_file, encoding="utf-8") as f:
         text = f.read()
 
     if len(sys.argv) >= 4:
