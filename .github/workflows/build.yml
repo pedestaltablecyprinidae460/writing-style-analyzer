@@ -1,0 +1,28 @@
+name: build pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: external workflow
+    uses: tehw0lf/workflows/.github/workflows/build-test-publish.yml@main
+    permissions:
+      actions: write
+      contents: write
+      packages: write
+    with:
+      tool: "uv"
+      install: "sync --all-extras"
+      format: "run black analyze.py german_academic_analyzer.py tests/"
+      lint: "run ruff check analyze.py german_academic_analyzer.py"
+      test: "run pytest tests/ -v --cov=. --cov-report=term-missing"
+      build_branch: "build"
+      build_main: "build"
+      event_name: ${{ github.event_name }}
+      artifact_path: "dist"
+      publish_github_release: "true"
+      publish_python_libraries: "false"
